@@ -8,10 +8,42 @@ import { pipeline } from 'stream/promises';
 import { Readable } from 'stream';
 
 const FIGMA_API_BASE = 'https://api.figma.com/v1';
+const MAX_RETRIES = 5;
+const INITIAL_DELAY = 2000; // 2 seconds
+
+// Sleep helper
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 export class FigmaDownloader {
   constructor(apiKey) {
     this.apiKey = apiKey;
+  }
+
+  /**
+   * Fetch with exponential backoff retry for 429 errors
+   */
+  async fetchWithRetry(url, options, retries = MAX_RETRIES) {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      const response = await fetch(url, options);
+      
+      if (response.status === 429) {
+        if (attempt === retries) {
+          throw new Error(`Rate limit exceeded after ${retries} retries`);
+        }
+        
+        // Get retry-after header or use exponential backoff
+        const retryAfter = response.headers.get('retry-after');
+        const delay = retryAfter 
+          ? parseInt(retryAfter) * 1000 
+          : INITIAL_DELAY * Math.pow(2, attempt);
+        
+        console.log(`[WAIT] Rate limited. Waiting ${delay/1000}s before retry ${attempt + 1}/${retries}...`);
+        await sleep(delay);
+        continue;
+      }
+      
+      return response;
+    }
   }
 
   async getImageUrls(fileKey, nodeIds, format = 'png', scale = 2) {
@@ -29,7 +61,7 @@ export class FigmaDownloader {
 
     const url = `${FIGMA_API_BASE}/images/${fileKey}?${params}`;
     
-    const response = await fetch(url, {
+    const response = await this.fetchWithRetry(url, {
       headers: {
         'X-Figma-Token': this.apiKey,
       },
