@@ -1,6 +1,6 @@
 {
   "name": "figma-dl",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Figma image downloader - CLI & MCP server",
   "type": "module",
   "main": "src/index.js",
@@ -11,7 +11,12 @@
     "start": "node src/cli.js",
     "mcp": "node src/mcp-server.js"
   },
-  "keywords": ["figma", "download", "mcp", "cli"],
+  "keywords": [
+    "figma",
+    "download",
+    "mcp",
+    "cli"
+  ],
   "author": "Agnes Team",
   "license": "MIT",
   "dependencies": {
