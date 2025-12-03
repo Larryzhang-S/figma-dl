@@ -1,13 +1,17 @@
 # Figma-DL
 
+[![npm version](https://img.shields.io/npm/v/figma-dl.svg)](https://www.npmjs.com/package/figma-dl)
+
 Figma 图片下载工具 - 绕过 MCP 官方工具的 bug，直接调用 Figma API。
 
 ## 安装
 
 ```bash
-cd figma-dl
-npm install
-npm link  # 全局安装 CLI
+# 全局安装
+npm install -g figma-dl
+
+# 或使用 npx 直接运行（无需安装）
+npx figma-dl --help
 ```
 
 ## CLI 使用
