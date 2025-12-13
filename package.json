@@ -1,6 +1,6 @@
 {
   "name": "figma-dl",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Figma image downloader - CLI & MCP server",
   "type": "module",
   "main": "src/index.js",
